@@ -3,12 +3,43 @@ package bst;
 public class BinarySearchTree<E extends Comparable<? super E>> {
 	BinaryNode<E> root;
     int size;
+
+	public static void main(String[] args) {
+		BinarySearchTree<Integer> intTree = new BinarySearchTree<>();
+		System.out.println("Size: " + intTree.size());
+		System.out.println("Height: " + intTree.height());
+		intTree.add(42);
+		intTree.add(12);
+		intTree.add(24);
+		intTree.add(25);
+		intTree.add(26);
+		intTree.add(3425);
+		intTree.add(325235);
+		intTree.add(26);
+		intTree.add(26);
+		intTree.add(26);
+		intTree.add(2);
+		intTree.add(84);
+		intTree.add(25);
+		intTree.add(87);
+		intTree.add(234);
+		intTree.printTree();
+		System.out.println("Size: " + intTree.size());
+		System.out.println("Height: " + intTree.height());
+		BSTVisualizer bst = new BSTVisualizer("Träd", 500, 500);
+		bst.drawTree(intTree);
+
+		Integer[] a = new Integer[100];
+		intTree.toArray(intTree.root, a, 0);
+		for(int i: a) System.out.print(" " + i + " ");
+	}
     
 	/**
 	 * Constructs an empty binary searchtree.
 	 */
 	public BinarySearchTree() {
-		
+		size = 0;
+		root = null;
 	}
 
 	/**
@@ -17,7 +48,35 @@ public class BinarySearchTree<E extends Comparable<? super E>> {
 	 * @return true if the the element was inserted
 	 */
 	public boolean add(E x) {
-		return false;
+		if (root != null) return add(root, x);
+		else {
+			root = new BinaryNode<>(x);
+			size++;
+			return true;
+		}
+	}
+	private boolean add(BinaryNode<E> actNode, E x) {
+		if (x.compareTo(actNode.element) < 0) {
+			//Kolla höger gren
+			if (actNode.left != null) {
+				return add(actNode.left, x);
+			} else {
+				actNode.left = new BinaryNode<>(x);
+				size++;
+				return true;
+			}
+		}
+		else if (x.compareTo(actNode.element) > 0) {
+			//Kolla vänster gren
+			if (actNode.right != null) {
+				return add(actNode.right, x);
+			} else {
+				actNode.right = new BinaryNode<>(x);
+				size++;
+				return true;
+			}
+		}
+		else return false;
 	}
 	
 	/**
@@ -25,7 +84,18 @@ public class BinarySearchTree<E extends Comparable<? super E>> {
 	 * @return the height of the tree
 	 */
 	public int height() {
-		return 0;
+		return height(root);
+	}
+	private int height(BinaryNode<E> n) {
+		if (n == null) {
+			return 0;
+		}
+		else {
+			int leftHeight = height(n.left);
+			int rightHeight = height(n.right);
+			if (leftHeight > rightHeight) return  leftHeight + 1;
+			else return rightHeight + 1;
+		}
 	}
 	
 	/**
@@ -33,14 +103,21 @@ public class BinarySearchTree<E extends Comparable<? super E>> {
 	 * @return the number of elements in this tree
 	 */
 	public int size() {
-		return 0;
+		return size;
 	}
 	
 	/**
 	 * Print tree contents in inorder.
 	 */
 	public void printTree() {
-
+		printTree(root);
+	}
+	private void printTree(BinaryNode<E> n) {
+		if (n != null) {
+			printTree(n.left);
+			System.out.println(n.element);
+			printTree(n.right);
+		}
 	}
 
 	/** 
@@ -57,7 +134,15 @@ public class BinarySearchTree<E extends Comparable<? super E>> {
 	 * position in a).
 	 */
 	private int toArray(BinaryNode<E> n, E[] a, int index) {
-		return 0;
+		if (n != null) {
+			index += toArray(n.left, a, index);
+			a[index] = n.element;
+			System.out.println("Index: " + index);
+			index++;
+			index += toArray(n.right, a, index++);
+			return index;
+		}
+		else return 0;
 	}
 	
 	/*
