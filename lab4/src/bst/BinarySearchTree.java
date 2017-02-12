@@ -8,7 +8,7 @@ public class BinarySearchTree<E extends Comparable<? super E>> {
 		BinarySearchTree<Integer> intTree = new BinarySearchTree<>();
 		System.out.println("Size: " + intTree.size());
 		System.out.println("Height: " + intTree.height());
-		intTree.add(42);
+/*		intTree.add(42);
 		intTree.add(12);
 		intTree.add(24);
 		intTree.add(25);
@@ -22,16 +22,24 @@ public class BinarySearchTree<E extends Comparable<? super E>> {
 		intTree.add(84);
 		intTree.add(25);
 		intTree.add(87);
-		intTree.add(234);
+		intTree.add(234);*/
+		intTree.add(1);
+		intTree.add(3);
+		intTree.add(5);
+		intTree.add(7);
+		intTree.add(11);
+		intTree.add(9);
+		intTree.add(13);
 		intTree.printTree();
 		System.out.println("Size: " + intTree.size());
 		System.out.println("Height: " + intTree.height());
 		BSTVisualizer bst = new BSTVisualizer("Träd", 500, 500);
+		BSTVisualizer bst2 = new BSTVisualizer("Träd", 500, 500);
 		bst.drawTree(intTree);
 
-		Integer[] a = new Integer[100];
-		intTree.toArray(intTree.root, a, 0);
-		for(int i: a) System.out.print(" " + i + " ");
+		intTree.rebuild();
+		bst2.drawTree(intTree);
+
 	}
     
 	/**
@@ -124,7 +132,10 @@ public class BinarySearchTree<E extends Comparable<? super E>> {
 	 * Builds a complete tree from the elements in the tree.
 	 */
 	public void rebuild() {
-
+	E[] a = (E[]) new Comparable[size];
+	toArray(root, a, 0);
+	BinaryNode<E> newRoot = buildTree(a, 0 , size-1);
+	root = newRoot;
 	}
 	
 	/*
@@ -135,14 +146,12 @@ public class BinarySearchTree<E extends Comparable<? super E>> {
 	 */
 	private int toArray(BinaryNode<E> n, E[] a, int index) {
 		if (n != null) {
-			index += toArray(n.left, a, index);
+			index = toArray(n.left, a, index);
 			a[index] = n.element;
-			System.out.println("Index: " + index);
 			index++;
-			index += toArray(n.right, a, index++);
-			return index;
+			index = toArray(n.right, a, index);
 		}
-		else return 0;
+		return index;
 	}
 	
 	/*
@@ -151,7 +160,15 @@ public class BinarySearchTree<E extends Comparable<? super E>> {
 	 * Returns the root of tree.
 	 */
 	private BinaryNode<E> buildTree(E[] a, int first, int last) {
-		return null;
+		if(first <= last) {
+			int middle = (last - first) / 2 + first;
+			BinaryNode<E> middleNode = new BinaryNode<E>(a[middle]);
+			BinaryNode<E> left = buildTree(a, first, middle - 1);
+			BinaryNode<E> right = buildTree(a, middle + 1, last);
+			middleNode.left = left;
+			middleNode.right = right;
+			return middleNode;
+		} else return null;
 	}
 	
 
