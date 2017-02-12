@@ -64,27 +64,20 @@ public class BinarySearchTree<E extends Comparable<? super E>> {
 		}
 	}
 	private boolean add(BinaryNode<E> actNode, E x) {
-		if (x.compareTo(actNode.element) < 0) {
-			//Kolla höger gren
-			if (actNode.left != null) {
-				return add(actNode.left, x);
-			} else {
-				actNode.left = new BinaryNode<>(x);
-				size++;
-				return true;
-			}
+		if (x.compareTo(actNode.element) == 0) return false;
+		
+		BinaryNode<E> theNode;
+		if (x.compareTo(actNode.element) < 0) 
+			theNode = actNode.left;
+		else  theNode = actNode.right;
+		
+		if (theNode != null) {
+			return add(theNode, x);
+		} else {
+			theNode = new BinaryNode<>(x);
+			size++;
+			return true;
 		}
-		else if (x.compareTo(actNode.element) > 0) {
-			//Kolla vänster gren
-			if (actNode.right != null) {
-				return add(actNode.right, x);
-			} else {
-				actNode.right = new BinaryNode<>(x);
-				size++;
-				return true;
-			}
-		}
-		else return false;
 	}
 	
 	/**
